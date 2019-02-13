@@ -92,7 +92,7 @@ let doWork = (config) => {
                     results.forEach((result) => {
                         console.log(`${logName} fim do processo`);
                     })
-                });
+                })
         });
 }
 
@@ -100,5 +100,5 @@ startEngine();
 readConfiguration()
     .then((config => {
         console.log(`${logName}tá tudo ok e já tenho as configurações, agora é hora de ir ver quem eu vou buscar`);
-        doWork(config);
+        unWork(config);
     }));
