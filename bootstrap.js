@@ -1,26 +1,35 @@
 const mongoose = require('mongoose');
 const databaseConfig = require('./config/database');
 
- mongoose.connect(databaseConfig.connectionString, (err) => {
+const logName = '[bootstrap] > ';
+
+const Arroba = require('./models/arroba.model');
+mongoose.connect(databaseConfig.connectionString, { useNewUrlParser: true } , (err) => {
      if(err){
         console.log('ocorreu um erro no banco de dados');
         console.log(err);
      }
  });
 
-const arrobas = [ 'jairbolsonaro', 'FlavioBolsonaro', 'CarlosBolsonaro' , 'BolsonaroSP' ];
+let start = () => {
+    
+    const toSaveArrobas = [ 'jairbolsonaro', 'FlavioBolsonaro', 'CarlosBolsonaro' , 'BolsonaroSP' ];
+    console.log(`${logName}vou inserir as arrobas ${toSaveArrobas.join(' ')}`);
 
-const Arroba = require('./models/arroba.model');
+    Arroba.find({}, (err,arrobas) => {
+       if(arrobas.length == 0){
+           toSaveArrobas.forEach((arroba) => {
+               let a = new Arroba({
+                   screenname: arroba
+               });
+   
+               a.save((err) => { 
+                   if(err) console.log(err)
+                   else console.log(`${logName}inseri o ${arroba}`);
+               });
+           })
+       }
+    });
+};
 
-
-Arroba.find({}, (err,res) => {
-    if(res.length == 0){
-        arrobas.forEach((arroba, index) => {
-            let a = new Arroba({
-                username: arroba
-            });
-            console.log('inserting arroba ' + a.username);
-            a.save((err) => console.log(err));
-        });
-    }
-})
+module.exports = start;

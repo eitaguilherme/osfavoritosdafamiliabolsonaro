@@ -34,8 +34,6 @@ passport.use(new Strategy({
        tokenSecret: tokenSecret
     };
 
-    console.log(_screenName);
-
     Config.findOne({ screenname: _screenName })
         .then((config => {
             if(!config){

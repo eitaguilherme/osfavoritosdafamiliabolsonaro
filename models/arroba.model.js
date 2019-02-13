@@ -2,6 +2,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 module.exports = mongoose.model('Arroba', new Schema({
-    username: String,
+    screenname: String,
     favorites : [ { retweeted: Boolean, tweet : {} } ]
 }));
