@@ -10,15 +10,10 @@ const configDatabase = require('./config/database');
 
 let logName = `[read-and-retweet-favorite-tweets] > [${new Date().toLocaleTimeString()}] > `;
 let start = (options) => {
-    // console.log(`${logName}iniciando os trabalhos`)
-
     const context = {
-        screenname: options.screenname,
         arroba : options.arroba
     };
 
-    // logName += `[@${context.screenname}] > `;
-    
     let fetchTweetsAndRetweet = (context) => {
         return new Promise((resolve,reject) => {
             console.log(`${logName}buscando os tweets favoritos do ${context.arroba.screenname}`);
@@ -30,7 +25,7 @@ let start = (options) => {
                 access_token_secret:  options.accessTokenSecret
             });
             
-            T.get('favorites/list', { count: 30, screen_name: context.arroba.screenname }, (err, tweets) =>{
+            T.get('favorites/list', { count: 2, screen_name: context.arroba.screenname }, (err, tweets) =>{
                 if(err) reject(err);
                 else{
                     console.log(`${logName}retornou da api com ${tweets.length}`);
@@ -41,11 +36,8 @@ let start = (options) => {
                             return !(context.arroba.favorites.filter((savedTweet) => savedTweet.tweet == id ).length > 0)
                         });
                         tweetsToSaveAndRetweet = tweetsToSaveAndRetweet.reverse();
-
-
                         if(tweetsToSaveAndRetweet.length > 0){
                             console.log(`${logName}tweets para salvar e/ou retuitar ${tweetsToSaveAndRetweet.length} do @${context.arroba.screenname}`);
-
                             Arroba.updateOne(
                                 { screenname: context.arroba.screenname },
                                 { $set: { favorites: tweetsToSaveAndRetweet.map((tweetToSave) => {
@@ -61,20 +53,16 @@ let start = (options) => {
 
                             let promises = [];
                             tweetsToSaveAndRetweet.forEach(tweetToRetweet => {
-                                promises = T.post('statuses/retweet/' + tweet, (err) => {
-                                    if(err) console.log(tweet + ": " + err.message);
-                                    else console.log('retuitado o id ' + tweet);
-                                }).then(() => console.log('retuitado'));
+                                T.post('statuses/update'
+                                    , { status: `${context.arroba.nome} favoritou isso aqui`, attachment_url: decodeURI(`https://twitter.com/${context.arroba.screenname}/status/${tweetToRetweet}`) } 
+                                    ,(err) => {
+                                        if(err) console.log(err);
+                                });
                             });
-                            Promise.all(promises)
-                                .then(() => resolve());
-
-                            // resolve();
                         }else{
                             console.log(`${logName}não tem nada pra fazer aqui, o @${context.arroba.screenname} não favoritou nada por enquanto`);
                             resolve();
                         }
-
                     }
                 }
             });

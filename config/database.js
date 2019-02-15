@@ -1,3 +1,3 @@
 module.exports = {
-    connectionString : 'mongodb://127.0.0.1:27017/tracker'
+    connectionString : "mongodb://favsbolsos:gui080187*@ds239412.mlab.com:39412/heroku_hnxl1tf9"
 }

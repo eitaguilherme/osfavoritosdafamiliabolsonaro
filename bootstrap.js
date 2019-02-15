@@ -13,19 +13,19 @@ mongoose.connect(databaseConfig.connectionString, { useNewUrlParser: true } , (e
 
 let start = () => {
     
-    const toSaveArrobas = [ 'jairbolsonaro', 'FlavioBolsonaro', 'CarlosBolsonaro' , 'BolsonaroSP' ];
-    console.log(`${logName}vou inserir as arrobas ${toSaveArrobas.join(' ')}`);
+    const toSaveArrobas = [ { screenname: 'jairbolsonaro', nome: 'Jair Bolsonaro'}, { screenname: 'FlavioBolsonaro', nome: 'Flavio Bolsonaro' }, { screenname: 'CarlosBolsonaro', nome: 'Carlos Bolsonaro' } , { screenname: 'BolsonaroSP', nome: 'Eduardo Bolsonaro' } ];
 
     Arroba.find({}, (err,arrobas) => {
        if(arrobas.length == 0){
            toSaveArrobas.forEach((arroba) => {
                let a = new Arroba({
-                   screenname: arroba
+                   screenname: arroba.screenname,
+                   nome: arroba.nome
                });
    
                a.save((err) => { 
                    if(err) console.log(err)
-                   else console.log(`${logName}inseri o ${arroba}`);
+                   else console.log(`${logName}inseri o ${arroba.nome}`);
                });
            })
        }
