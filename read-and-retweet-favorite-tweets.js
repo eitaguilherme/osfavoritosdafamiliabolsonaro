@@ -25,7 +25,7 @@ let start = (options) => {
                 access_token_secret:  options.accessTokenSecret
             });
             
-            T.get('favorites/list', { count: 2, screen_name: context.arroba.screenname }, (err, tweets) =>{
+            T.get('favorites/list', { count: 20, screen_name: context.arroba.screenname }, (err, tweets) =>{
                 if(err) reject(err);
                 else{
                     console.log(`${logName}retornou da api com ${tweets.length}`);
